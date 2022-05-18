@@ -1,6 +1,7 @@
 package com.springboot.blog.controller;
 
 import com.springboot.blog.payload.PostDto;
+import com.springboot.blog.payload.PostResponse;
 import com.springboot.blog.service.PostService;
 import javafx.geometry.Pos;
 import org.springframework.http.HttpStatus;
@@ -13,7 +14,7 @@ import java.util.List;
 @RequestMapping("/api/posts")
 public class PostController {
 
-    // inject interface instead of a impl class -> loose coupling
+    // inject interface instead of an implement class -> loose coupling
     private PostService postService;
 
     //only one constructor,can omit @autowire annotation
@@ -28,8 +29,10 @@ public class PostController {
     }
 
     @GetMapping
-    public List<PostDto> getAllPosts(){
-        return postService.getAllPosts();
+    public PostResponse getAllPosts(
+            @RequestParam(value="pageNo",defaultValue="0",required=false)int pageNo,
+            @RequestParam(value="pageSize",defaultValue="10",required = false) int pageSize){
+        return postService.getAllPosts(pageNo,pageSize);
     }
 
     @GetMapping("/{id}")
