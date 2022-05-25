@@ -53,7 +53,6 @@ public class GlobalExceptionHandler {
 
 
     //same as  protected ResponseEntity<Object> handleMethodArgumentNotValid
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleBlogAPIException(MethodArgumentNotValidException exception, WebRequest webRequest) {
         Map<String,String> errors = new HashMap<>();
