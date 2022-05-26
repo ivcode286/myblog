@@ -7,6 +7,7 @@ import com.springboot.blog.utils.AppConstants;
 //import javafx.geometry.Pos;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -24,6 +25,7 @@ public class PostController {
         this.postService = postService;
     }
 
+    @PreAuthorize(("hasRole('ADMIN')"))
     //create blog post
     @PostMapping
     public ResponseEntity<PostDto> createPost(@Valid @RequestBody PostDto postDto) {
@@ -51,6 +53,7 @@ public class PostController {
         //return entire Http response including status code,body,etc
     }
 
+    @PreAuthorize(("hasRole('ADMIN')"))
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deletePost(@PathVariable(name="id") long id){
         postService.deletePostById(id);
