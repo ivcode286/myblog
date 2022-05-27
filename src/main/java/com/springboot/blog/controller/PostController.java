@@ -25,7 +25,7 @@ public class PostController {
         this.postService = postService;
     }
 
-    @PreAuthorize(("hasRole('ADMIN')"))
+    @PreAuthorize(("hasRole('ADMIN')"))   //spring auto add 'ROLE_' prefix as ROLE_ADMIN in DB
     //create blog post
     @PostMapping
     public ResponseEntity<PostDto> createPost(@Valid @RequestBody PostDto postDto) {
@@ -34,29 +34,29 @@ public class PostController {
 
     @GetMapping
     public PostResponse getAllPosts(
-            @RequestParam(value="pageNo",defaultValue= AppConstants.DEFAULT_PAGE_NUMBER,required=false)int pageNo,
-            @RequestParam(value="pageSize",defaultValue=AppConstants.DEFAULT_PAGE_SIZE,required = false) int pageSize,
-            @RequestParam(value="sortBy",defaultValue = AppConstants.DEFAULT_SORT_BY,required = false)String sortBy,
-            @RequestParam(value="sortDir",defaultValue =AppConstants.DEFAULT_SORT_DIRECTION,required = false)String sortDir){
-        return postService.getAllPosts(pageNo,pageSize,sortBy,sortDir);
+            @RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
+            @RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
+            @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir) {
+        return postService.getAllPosts(pageNo, pageSize, sortBy, sortDir);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PostDto> getPostById(@PathVariable(name="id") long id){
+    public ResponseEntity<PostDto> getPostById(@PathVariable(name = "id") long id) {
         return ResponseEntity.ok(postService.getPostByID(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PostDto> updatePost(@Valid @RequestBody PostDto postDto,@PathVariable(name="id") long id){
-       PostDto postResponse = postService.updatePost(postDto,id);
-       return new ResponseEntity<>(postResponse,HttpStatus.OK);
+    public ResponseEntity<PostDto> updatePost(@Valid @RequestBody PostDto postDto, @PathVariable(name = "id") long id) {
+        PostDto postResponse = postService.updatePost(postDto, id);
+        return new ResponseEntity<>(postResponse, HttpStatus.OK);
         //return entire Http response including status code,body,etc
     }
 
     @PreAuthorize(("hasRole('ADMIN')"))
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deletePost(@PathVariable(name="id") long id){
+    public ResponseEntity<String> deletePost(@PathVariable(name = "id") long id) {
         postService.deletePostById(id);
-        return new ResponseEntity<>("Post entity deleted successfully.",HttpStatus.OK);
+        return new ResponseEntity<>("Post entity deleted successfully.", HttpStatus.OK);
     }
 }
