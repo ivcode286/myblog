@@ -24,7 +24,7 @@ import java.util.Collections;
 
 @RestController
 @RequestMapping("/api/auth")
-public class AuthColltroller {
+public class AuthController {
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -49,7 +49,7 @@ public class AuthColltroller {
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody SignUpDto signUpDto) {
         if (userRepository.existsByUsername(signUpDto.getUsername())) {
-            return new ResponseEntity<>("Username is aldready taken!", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Username is already taken!", HttpStatus.BAD_REQUEST);
         }
 
         if (userRepository.existsByEmail(signUpDto.getEmail())) {
