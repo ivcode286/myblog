@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -17,7 +18,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     //Inject dependencies
     @Autowired
-    private JwtTokenProvider jwtTokenProvider;
+    private JwtTokenProvider tokenProvider;
 
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
@@ -29,17 +30,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         //get JWT token from http request
         String token = getJWTfromToken(request);
         //validate token
-        if (StringUtils.hasText(token) && jwtTokenProvider.validateToken(token)) {
+        if (StringUtils.hasText(token) && tokenProvider.validateToken(token)) {
             //get username from token
-            String username = jwtTokenProvider.getUsernameFromJWT(token);
+            String username = tokenProvider.getUsernameFromJWT(token);
             //load user associated with token
             UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-            filterChain.doFilter(request, response);
+            authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         }
-
-
+        filterChain.doFilter(request, response);
     }
 
     //Bearer <accessToken>
